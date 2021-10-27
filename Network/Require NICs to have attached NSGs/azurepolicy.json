@@ -1,0 +1,41 @@
+{
+  "properties": {
+    "displayName": "Require NICs to have attached NSGs",
+    "description": "This policy requires all NICs to have an associated NSG attached to them.",
+    "parameters": {
+      "effect": {
+        "type": "string",
+        "defaultValue": "Deny",
+        "allowedValues": [
+          "Deny",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Enable or disable the execution of the policy"
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "equals": "Microsoft.Network/networkInterfaces",
+            "field": "type"
+          },
+          {
+            "exists": "false",
+            "field": "Microsoft.Network/networkInterfaces/networkSecurityGroup.id"
+          },
+          {
+            "exists": "true",
+            "field": "Microsoft.Network/networkInterfaces/virtualMachine.id"
+          }
+        ]
+      },
+      "then": {
+        "effectType": "[parameters('effect')]"
+      }
+    }
+  }
+}

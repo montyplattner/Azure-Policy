@@ -1,0 +1,10 @@
+{
+    "listOfAllowedLocations": {
+        "type": "Array",
+        "metadata": {
+            "description": "The list of locations that resource groups can be created in.",
+            "strongType": "location",
+            "displayName": "Allowed locations"
+        }
+    }
+}

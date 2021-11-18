@@ -9,7 +9,7 @@ This policy automatically enables FTPS for Azure App Services (Web App and Funct
 ## Deploy using Azure PowerShell
 
 ````powershell
-$definition = New-AzPolicyDefinition -Name "Enable FTPS for Azure App Services" -DisplayName "Enable FTPS for Azure App Services" -description "This policy automatically enables FTPS for Azure App Services (Web App and Function App)" -Policy 'https://raw.githubusercontent.com/montyplattner/Azure-Policy/main/App%20Service/Enable%20FTPS%20for%20Azure%20App%20Services/azurepolicy.parameters.json' -Parameter 'https://raw.githubusercontent.com/montyplattner/Azure-Policy/main/App%20Service/Enable%20FTPS%20for%20Azure%20App%20Services/azurepolicy.parameters.json' -Mode All
+$definition = New-AzPolicyDefinition -Name "Enable FTPS for Azure App Services" -DisplayName "Enable FTPS for Azure App Services" -description "This policy automatically enables FTPS for Azure App Services (Web App and Function App)" -Policy 'https://raw.githubusercontent.com/montyplattner/Azure-Policy/main/App%20Service/Enable%20FTPS%20for%20Azure%20App%20Services/azurepolicy.rules.json' -Parameter 'https://raw.githubusercontent.com/montyplattner/Azure-Policy/main/App%20Service/Enable%20FTPS%20for%20Azure%20App%20Services/azurepolicy.parameters.json' -Mode All
 
 $assignment = New-AzPolicyAssignment -Name <assignmentname> -Scope <scope>  -PolicyDefinition $definition
 
@@ -20,7 +20,7 @@ $assignment
 
 ````cli
 
-az policy definition create --name 'Enable FTPS for Azure App Services' --display-name 'Enable FTPS for Azure App Services' --description 'This policy automatically enables FTPS for Azure App Services (Web App and Function App)' --rules 'https://raw.githubusercontent.com/montyplattner/Azure-Policy/main/App%20Service/Enable%20FTPS%20for%20Azure%20App%20Services/azurepolicy.parameters.json' --params 'https://raw.githubusercontent.com/montyplattner/Azure-Policy/main/App%20Service/Enable%20FTPS%20for%20Azure%20App%20Services/azurepolicy.parameters.json' --mode All
+az policy definition create --name 'Enable FTPS for Azure App Services' --display-name 'Enable FTPS for Azure App Services' --description 'This policy automatically enables FTPS for Azure App Services (Web App and Function App)' --rules 'https://raw.githubusercontent.com/montyplattner/Azure-Policy/main/App%20Service/Enable%20FTPS%20for%20Azure%20App%20Services/azurepolicy.rules.json' --params 'https://raw.githubusercontent.com/montyplattner/Azure-Policy/main/App%20Service/Enable%20FTPS%20for%20Azure%20App%20Services/azurepolicy.parameters.json' --mode All
 
 az policy assignment create --name <assignmentname> --scope <scope> --policy "Enable FTPS for Azure App Services" 
 

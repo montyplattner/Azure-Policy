@@ -24,8 +24,8 @@
             "equals": "Microsoft.Compute/virtualMachines"
           },
           {
-            "field": "Microsoft.Compute/virtualMachines/storageProfile.osDisk.osType",
-            "equals": "Linux"
+            "field": "Microsoft.Compute/virtualMachines/osProfile.linuxConfiguration",
+            "exists": "true"
           },
           {
             "not": {

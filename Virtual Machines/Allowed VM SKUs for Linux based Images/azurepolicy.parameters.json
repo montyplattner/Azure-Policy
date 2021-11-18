@@ -1,0 +1,10 @@
+{
+    "listOfAllowedSKUs": {
+      "type": "Array",
+      "metadata": {
+        "description": "The list of allowed Size SKUs.",
+        "displayName": "Allowed Size SKUs",
+        "strongType": "vmSKUs"
+      }
+    }
+  }

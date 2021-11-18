@@ -22,6 +22,6 @@ $assignment
 
 az policy definition create --name 'allowed-vm-skus-linux' --display-name 'Allowed VM SKUs for Linux Based Images' --description 'This policy restricts the VM Size SKUs that can be used when deploying a Linux based image' --rules 'https://raw.githubusercontent.com/montyplattner/Azure-Policy/main/Virtual%20Machines/Allowed%20VM%20SKUs%20for%20Linux%20based%20Images/azurepolicy.rules.json' --params 'https://raw.githubusercontent.com/montyplattner/Azure-Policy/main/Virtual%20Machines/Allowed%20VM%20SKUs%20for%20Linux%20based%20Images/azurepolicy.parameters.json' --mode All
 
-az policy assignment create --name <assignmentname> --scope <scope> --policy "Allowed VM SKUs for Linux Based Images" 
+az policy assignment create --name <assignmentname> --scope <scope> --policy "allowed-vm-skus-linux" 
 
 ````

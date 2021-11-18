@@ -9,22 +9,20 @@ This policy enables you to restrict the locations your organization can specify 
 ## Deploy using Azure PowerShell
 
 ````powershell
-$definition = New-AzPolicyDefinition -Name "Allowed locations" -DisplayName "Allowed locations" -description "This policy enables you to restrict the locations your organization can specify when deploying resources. Use to enforce your geo-compliance requirements. Excludes resource groups, Microsoft.AzureActiveDirectory/b2cDirectories, and resources that use the 'global' region" -Policy 'https://raw.githubusercontent.com/montyplattner/Azure-Policy/main/Geo%20Restrictions/Restrict%20resources%20to%20US%20regions/azurepolicy.rules.json' -Parameter 'https://raw.githubusercontent.com/montyplattner/Azure-Policy/main/Geo%20Restrictions/Restrict%20resources%20to%20US%20regions/azurepolicy.parameters.json' -Mode All
+$definition = New-AzPolicyDefinition -Name "allowed-locations-resources" -DisplayName "Allowed locations" -description "This policy enables you to restrict the locations your organization can specify when deploying resources. Use to enforce your geo-compliance requirements. Excludes resource groups, Microsoft.AzureActiveDirectory/b2cDirectories, and resources that use the 'global' region" -Policy 'https://raw.githubusercontent.com/montyplattner/Azure-Policy/main/Geo%20Restrictions/Restrict%20resources%20to%20US%20regions/azurepolicy.rules.json' -Parameter 'https://raw.githubusercontent.com/montyplattner/Azure-Policy/main/Geo%20Restrictions/Restrict%20resources%20to%20US%20regions/azurepolicy.parameters.json' -Mode All
 
 $assignment = New-AzPolicyAssignment -Name <assignmentname> -Scope <scope>  -PolicyDefinition $definition
 
 $assignment 
 ````
 
-
-
 ## Deploy using Azure CLI
 
 ````cli
 
-az policy definition create --name 'Allowed locations' --display-name 'Allowed locations' --description 'This policy enables you to restrict the locations your organization can specify when deploying resources. Use to enforce your geo-compliance requirements. Excludes resource groups, Microsoft.AzureActiveDirectory/b2cDirectories, and resources that use the 'global' region' --rules 'https://raw.githubusercontent.com/montyplattner/Azure-Policy/main/Geo%20Restrictions/Restrict%20resources%20to%20US%20regions/azurepolicy.rules.json' --params 'https://raw.githubusercontent.com/montyplattner/Azure-Policy/main/Geo%20Restrictions/Restrict%20resources%20to%20US%20regions/azurepolicy.parameters.json' --mode All
+az policy definition create --name 'allowed-locations-resources' --display-name 'Allowed locations' --description 'This policy enables you to restrict the locations your organization can specify when deploying resources. Use to enforce your geo-compliance requirements. Excludes resource groups, Microsoft.AzureActiveDirectory/b2cDirectories, and resources that use the 'global' region' --rules 'https://raw.githubusercontent.com/montyplattner/Azure-Policy/main/Geo%20Restrictions/Restrict%20resources%20to%20US%20regions/azurepolicy.rules.json' --params 'https://raw.githubusercontent.com/montyplattner/Azure-Policy/main/Geo%20Restrictions/Restrict%20resources%20to%20US%20regions/azurepolicy.parameters.json' --mode All
 
-az policy assignment create --name <assignmentname> --scope <scope> --policy "Allowed locations" 
+az policy assignment create --name <assignmentname> --scope <scope> --policy "allowed-locations-resources" 
 
 ````
 

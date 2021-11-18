@@ -9,7 +9,7 @@ This policy automatically enables HTTPS for new Azure App Services (Web App and 
 ## Deploy using Azure PowerShell
 
 ````powershell
-$definition = New-AzPolicyDefinition -Name "Enable HTTPS for Azure Web Apps" -DisplayName "Enable HTTPS for Azure Web Apps" -description "This policy automatically enables HTTPS for new Azure App Services (Web App and Function App) deployments" -Policy 'https://raw.githubusercontent.com/montyplattner/Azure-Policy/main/App%20Service/Enable%20HTTPS%20for%20Azure%20App%20Services/azurepolicy.rules.json?token=AMCM2OLIJFDDN4BNPGLQBKLBPQJ5Q' -Parameter 'https://raw.githubusercontent.com/montyplattner/Azure-Policy/main/App%20Service/Enable%20HTTPS%20for%20Azure%20App%20Services/azurepolicy.parameters.json' -Mode All
+$definition = New-AzPolicyDefinition -Name "app-services-enable-https" -DisplayName "Enable HTTPS for Azure Web Apps" -description "This policy automatically enables HTTPS for new Azure App Services (Web App and Function App) deployments" -Policy 'https://raw.githubusercontent.com/montyplattner/Azure-Policy/main/App%20Service/Enable%20HTTPS%20for%20Azure%20App%20Services/azurepolicy.rules.json?token=AMCM2OLIJFDDN4BNPGLQBKLBPQJ5Q' -Parameter 'https://raw.githubusercontent.com/montyplattner/Azure-Policy/main/App%20Service/Enable%20HTTPS%20for%20Azure%20App%20Services/azurepolicy.parameters.json' -Mode All
 
 $assignment = New-AzPolicyAssignment -Name <assignmentname> -Scope <scope>  -PolicyDefinition $definition
 
@@ -22,9 +22,9 @@ $assignment
 
 ````cli
 
-az policy definition create --name 'Enable HTTPS for Azure Web Apps' --display-name 'Enable HTTPS for Azure Web Apps' --description 'This policy automatically enables HTTPS for new Azure App Services (Web App and Function App) deployments' --rules 'https://raw.githubusercontent.com/montyplattner/Azure-Policy/main/App%20Service/Enable%20HTTPS%20for%20Azure%20App%20Services/azurepolicy.rules.json?token=AMCM2OLIJFDDN4BNPGLQBKLBPQJ5Q' --params 'https://raw.githubusercontent.com/montyplattner/Azure-Policy/main/App%20Service/Enable%20HTTPS%20for%20Azure%20App%20Services/azurepolicy.parameters.json' --mode All
+az policy definition create --name 'app-services-enable-https' --display-name 'Enable HTTPS for Azure Web Apps' --description 'This policy automatically enables HTTPS for new Azure App Services (Web App and Function App) deployments' --rules 'https://raw.githubusercontent.com/montyplattner/Azure-Policy/main/App%20Service/Enable%20HTTPS%20for%20Azure%20App%20Services/azurepolicy.rules.json?token=AMCM2OLIJFDDN4BNPGLQBKLBPQJ5Q' --params 'https://raw.githubusercontent.com/montyplattner/Azure-Policy/main/App%20Service/Enable%20HTTPS%20for%20Azure%20App%20Services/azurepolicy.parameters.json' --mode All
 
-az policy assignment create --name <assignmentname> --scope <scope> --policy "Enable HTTPS for Azure Web Apps" 
+az policy assignment create --name <assignmentname> --scope <scope> --policy "app-services-enable-https" 
 
 ````
 

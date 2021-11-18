@@ -9,7 +9,7 @@ This policy requires all NICs to have an associated NSG attached to them.
 ## Deploy using Azure PowerShell
 
 ````powershell
-$definition = New-AzPolicyDefinition -Name "Require NICs to have attached NSGs" -DisplayName "Require NICs to have attached NSGs" -description "This policy requires all NICs to have an associated NSG attached to them" -Policy 'https://raw.githubusercontent.com/montyplattner/Azure-Policy/main/Network/Require%20NICs%20to%20have%20attached%20NSGs/azurepolicy.rules.json' -Parameter 'https://raw.githubusercontent.com/montyplattner/Azure-Policy/main/Network/Require%20NICs%20to%20have%20attached%20NSGs/azurepolicy.parameters.json' -Mode All
+$definition = New-AzPolicyDefinition -Name "require-NIC-NSG" -DisplayName "Require NICs to have attached NSGs" -description "This policy requires all NICs to have an associated NSG attached to them" -Policy 'https://raw.githubusercontent.com/montyplattner/Azure-Policy/main/Network/Require%20NICs%20to%20have%20attached%20NSGs/azurepolicy.rules.json' -Parameter 'https://raw.githubusercontent.com/montyplattner/Azure-Policy/main/Network/Require%20NICs%20to%20have%20attached%20NSGs/azurepolicy.parameters.json' -Mode All
 
 $assignment = New-AzPolicyAssignment -Name <assignmentname> -Scope <scope>  -PolicyDefinition $definition
 
@@ -22,9 +22,9 @@ $assignment
 
 ````cli
 
-az policy definition create --name 'Require NICs to have attached NSGs' --display-name 'Require NICs to have attached NSGs' --description 'This policy requires all NICs to have an associated NSG attached to them' --rules 'https://raw.githubusercontent.com/montyplattner/Azure-Policy/main/Network/Require%20NICs%20to%20have%20attached%20NSGs/azurepolicy.rules.json' --params 'https://raw.githubusercontent.com/montyplattner/Azure-Policy/main/Network/Require%20NICs%20to%20have%20attached%20NSGs/azurepolicy.parameters.json' --mode All
+az policy definition create --name 'require-NIC-NSG' --display-name 'Require NICs to have attached NSGs' --description 'This policy requires all NICs to have an associated NSG attached to them' --rules 'https://raw.githubusercontent.com/montyplattner/Azure-Policy/main/Network/Require%20NICs%20to%20have%20attached%20NSGs/azurepolicy.rules.json' --params 'https://raw.githubusercontent.com/montyplattner/Azure-Policy/main/Network/Require%20NICs%20to%20have%20attached%20NSGs/azurepolicy.parameters.json' --mode All
 
-az policy assignment create --name <assignmentname> --scope <scope> --policy "Require NICs to have attached NSGs" 
+az policy assignment create --name <assignmentname> --scope <scope> --policy "require-NIC-NSG" 
 
 ````
 

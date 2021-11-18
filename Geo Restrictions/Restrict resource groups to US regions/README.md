@@ -9,7 +9,7 @@ This policy enables you to restrict the locations your organization can create r
 ## Deploy using Azure PowerShell
 
 ````powershell
-$definition = New-AzPolicyDefinition -Name "Allowed locations for resource groups" -DisplayName "Allowed locations for resource groups" -description "This policy enables you to restrict the locations your organization can create resource groups in. Use to enforce your geo-compliance requirements." -Policy 'https://raw.githubusercontent.com/montyplattner/Azure-Policy/main/Geo%20Restrictions/Restrict%20resource%20groups%20to%20US%20regions/azurepolicy.rules.json' -Parameter 'https://raw.githubusercontent.com/montyplattner/Azure-Policy/main/Geo%20Restrictions/Restrict%20resource%20groups%20to%20US%20regions/azurepolicy.parameters.json' -Mode All
+$definition = New-AzPolicyDefinition -Name "allowed-locations-resource-groups" -DisplayName "Allowed locations for resource groups" -description "This policy enables you to restrict the locations your organization can create resource groups in. Use to enforce your geo-compliance requirements." -Policy 'https://raw.githubusercontent.com/montyplattner/Azure-Policy/main/Geo%20Restrictions/Restrict%20resource%20groups%20to%20US%20regions/azurepolicy.rules.json' -Parameter 'https://raw.githubusercontent.com/montyplattner/Azure-Policy/main/Geo%20Restrictions/Restrict%20resource%20groups%20to%20US%20regions/azurepolicy.parameters.json' -Mode All
 
 $assignment = New-AzPolicyAssignment -Name <assignmentname> -Scope <scope>  -PolicyDefinition $definition
 
@@ -20,9 +20,9 @@ $assignment
 
 ````cli
 
-az policy definition create --name 'Allowed locations for resource groups' --display-name 'Allowed locations for resource groups' --description 'This policy enables you to restrict the locations your organization can create resource groups in. Use to enforce your geo-compliance requirements.' --rules 'https://raw.githubusercontent.com/montyplattner/Azure-Policy/main/Geo%20Restrictions/Restrict%20resource%20groups%20to%20US%20regions/azurepolicy.rules.json' --params 'https://raw.githubusercontent.com/montyplattner/Azure-Policy/main/Geo%20Restrictions/Restrict%20resource%20groups%20to%20US%20regions/azurepolicy.parameters.json' --mode All
+az policy definition create --name 'allowed-locations-resource-groups' --display-name 'Allowed locations for resource groups' --description 'This policy enables you to restrict the locations your organization can create resource groups in. Use to enforce your geo-compliance requirements.' --rules 'https://raw.githubusercontent.com/montyplattner/Azure-Policy/main/Geo%20Restrictions/Restrict%20resource%20groups%20to%20US%20regions/azurepolicy.rules.json' --params 'https://raw.githubusercontent.com/montyplattner/Azure-Policy/main/Geo%20Restrictions/Restrict%20resource%20groups%20to%20US%20regions/azurepolicy.parameters.json' --mode All
 
-az policy assignment create --name <assignmentname> --scope <scope> --policy "Allowed locations for resource groups" 
+az policy assignment create --name <assignmentname> --scope <scope> --policy "allowed-locations-resource-groups" 
 
 ````
 

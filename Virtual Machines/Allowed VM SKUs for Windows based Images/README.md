@@ -9,7 +9,7 @@ This policy restricts the VM Size SKUs that can be used when deploying a Windows
 ## Deploy using Azure PowerShell
 
 ````powershell
-$definition = New-AzPolicyDefinition -Name "Allowed VM SKUs for Windows Based Images" -DisplayName "Allowed VM SKUs for Windows Based Images" -description "This policy restricts the VM Size SKUs that can be used when deploying a Windows based image" -Policy 'https://raw.githubusercontent.com/montyplattner/Azure-Policy/main/Virtual%20Machines/Allowed%20VM%20SKUs%20for%20Windows%20based%20Images/azurepolicy.parameters.json' -Parameter 'https://raw.githubusercontent.com/montyplattner/Azure-Policy/main/Virtual%20Machines/Allowed%20VM%20SKUs%20for%20Windows%20based%20Images/azurepolicy.parameters.json' -Mode All
+$definition = New-AzPolicyDefinition -Name "allowed-vm-skus-windows" -DisplayName "Allowed VM SKUs for Windows Based Images" -description "This policy restricts the VM Size SKUs that can be used when deploying a Windows based image" -Policy 'https://raw.githubusercontent.com/montyplattner/Azure-Policy/main/Virtual%20Machines/Allowed%20VM%20SKUs%20for%20Windows%20based%20Images/azurepolicy.parameters.json' -Parameter 'https://raw.githubusercontent.com/montyplattner/Azure-Policy/main/Virtual%20Machines/Allowed%20VM%20SKUs%20for%20Windows%20based%20Images/azurepolicy.parameters.json' -Mode All
 
 $assignment = New-AzPolicyAssignment -Name <assignmentname> -Scope <scope>  -PolicyDefinition $definition
 
@@ -20,7 +20,7 @@ $assignment
 
 ````cli
 
-az policy definition create --name 'Allowed VM SKUs for Windows Based Images' --display-name 'Allowed VM SKUs for Windows Based Images' --description 'This policy restricts the VM Size SKUs that can be used when deploying a Windows based image' --rules 'https://raw.githubusercontent.com/montyplattner/Azure-Policy/main/Virtual%20Machines/Allowed%20VM%20SKUs%20for%20Windows%20based%20Images/azurepolicy.parameters.json' --params 'https://raw.githubusercontent.com/montyplattner/Azure-Policy/main/Virtual%20Machines/Allowed%20VM%20SKUs%20for%20Windows%20based%20Images/azurepolicy.parameters.json' --mode All
+az policy definition create --name 'allowed-vm-skus-windows' --display-name 'Allowed VM SKUs for Windows Based Images' --description 'This policy restricts the VM Size SKUs that can be used when deploying a Windows based image' --rules 'https://raw.githubusercontent.com/montyplattner/Azure-Policy/main/Virtual%20Machines/Allowed%20VM%20SKUs%20for%20Windows%20based%20Images/azurepolicy.parameters.json' --params 'https://raw.githubusercontent.com/montyplattner/Azure-Policy/main/Virtual%20Machines/Allowed%20VM%20SKUs%20for%20Windows%20based%20Images/azurepolicy.parameters.json' --mode All
 
 az policy assignment create --name <assignmentname> --scope <scope> --policy "Allowed VM SKUs for Windows Based Images" 
 

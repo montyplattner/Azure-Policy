@@ -1,23 +1,34 @@
 {
-    "if": {
-      "allOf": [
-        {
-          "field": "type",
-          "equals": "Microsoft.Compute/virtualMachines"
-        },
-        {
-          "field": "Microsoft.Compute/virtualMachines/storageProfile.osDisk.osType",
-          "equals": "Windows"
-        },
-        {
-          "not": {
-            "field": "Microsoft.Compute/virtualMachines/sku.name",
-            "in": "[parameters('listOfAllowedSKUs')]"
+  "if": {
+    "allOf": [
+      {
+        "field": "type",
+        "in": [
+          "Microsoft.Compute/virtualMachines",
+          "Microsoft.Compute/VirtualMachineScaleSets"
+        ]
+      },
+      {
+        "anyOf": [
+          {
+            "field": "Microsoft.Compute/virtualMachines/osProfile.windowsConfiguration",
+            "exists": "true"
+          },
+          {
+            "field": "Microsoft.Compute/virtualMachineScaleSets/osProfile.windowsConfiguration",
+            "exists": "Succeeded"
           }
+        ]
+      },
+      {
+        "not": {
+          "field": "Microsoft.Compute/virtualMachines/sku.name",
+          "in": "[parameters('listOfAllowedSKUs')]"
         }
-      ]
-    },
-    "then": {
-      "effect": "deny"
-    }
+      }
+    ]
+  },
+  "then": {
+    "effect": "deny"
   }
+}

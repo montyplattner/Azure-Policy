@@ -21,11 +21,22 @@
         "allOf": [
           {
             "field": "type",
-            "equals": "Microsoft.Compute/virtualMachines"
+            "in": [
+              "Microsoft.Compute/virtualMachines",
+              "Microsoft.Compute/VirtualMachineScaleSets"
+            ]
           },
           {
-            "field": "Microsoft.Compute/virtualMachines/osProfile.linuxConfiguration",
-            "exists": "true"
+            "anyOf": [
+              {
+                "field": "Microsoft.Compute/virtualMachines/osProfile.linuxConfiguration",
+                "exists": "true"
+              },
+              {
+                "field": "Microsoft.Compute/virtualMachineScaleSets/osProfile.linuxConfiguration",
+                "exists": "Succeeded"
+              }
+            ]
           },
           {
             "not": {

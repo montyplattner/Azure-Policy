@@ -34,7 +34,7 @@
               },
               {
                 "field": "Microsoft.Compute/virtualMachineScaleSets/osProfile.windowsConfiguration",
-                "exists": "Succeeded"
+                "exists": "true"
               }
             ]
           },

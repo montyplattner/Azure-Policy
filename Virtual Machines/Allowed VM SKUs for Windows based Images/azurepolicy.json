@@ -1,7 +1,7 @@
 {
   "properties": {
     "displayName": "Allowed VM SKUs for Windows Based Images",
-    "mode": "Indexed",
+    "mode": "All",
     "description": "This policy restricts the VM Size SKUs that can be used when deploying a Windows based image.",
     "metadata": {
       "category": "Compute"
@@ -18,31 +18,42 @@
     },
     "policyRule": {
       "if": {
-        "allOf": [
+        "anyOf": [
           {
-            "field": "type",
-            "in": [
-              "Microsoft.Compute/virtualMachines",
-              "Microsoft.Compute/VirtualMachineScaleSets"
-            ]
-          },
-          {
-            "anyOf": [
+            "allOf": [
+              {
+                "field": "type",
+                "equals": "Microsoft.Compute/virtualMachines"
+              },
               {
                 "field": "Microsoft.Compute/virtualMachines/osProfile.windowsConfiguration",
                 "exists": "true"
               },
               {
-                "field": "Microsoft.Compute/virtualMachineScaleSets/osProfile.windowsConfiguration",
-                "exists": "true"
+                "not": {
+                  "field": "Microsoft.Compute/virtualMachines/sku.name",
+                  "in": "[parameters('listOfAllowedSKUs')]"
+                }
               }
             ]
           },
           {
-            "not": {
-              "field": "Microsoft.Compute/virtualMachines/sku.name",
-              "in": "[parameters('listOfAllowedSKUs')]"
-            }
+            "allOf": [
+              {
+                "field": "type",
+                "equals": "Microsoft.Compute/Microsoft.Compute/VirtualMachineScaleSets"
+              },
+              {
+                "field": "Microsoft.Compute/virtualMachineScaleSets/virtualMachineProfile.osProfile.windowsConfiguration",
+                "exists": "true"
+              },
+              {
+                "not": {
+                  "field": "Microsoft.Compute/virtualMachineScaleSets/sku.name",
+                  "in": "[parameters('listOfAllowedSKUs')]"
+                }
+              }
+            ]
           }
         ]
       },

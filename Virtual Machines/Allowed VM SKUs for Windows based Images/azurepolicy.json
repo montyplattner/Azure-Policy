@@ -41,7 +41,7 @@
             "allOf": [
               {
                 "field": "type",
-                "equals": "Microsoft.Compute/Microsoft.Compute/VirtualMachineScaleSets"
+                "equals": "Microsoft.Compute/VirtualMachineScaleSets"
               },
               {
                 "field": "Microsoft.Compute/virtualMachineScaleSets/virtualMachineProfile.osProfile.windowsConfiguration",

@@ -1,7 +1,7 @@
 {
   "properties": {
     "displayName": "Allowed VM SKUs for Linux Based Images",
-    "mode": "Indexed",
+    "mode": "All",
     "description": "This policy restricts the VM Size SKUs that can be used when deploying a Linux based image.",
     "metadata": {
       "category": "Compute"

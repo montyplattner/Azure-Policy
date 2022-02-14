@@ -1,0 +1,108 @@
+{
+    "if": {
+        "allOf": [
+            {
+                "field": "type",
+                "equals": "Microsoft.Compute/virtualMachines"
+            },
+            {
+                "field": "Microsoft.Compute/virtualMachines/osProfile.linuxConfiguration",
+                "exists": "true"
+            },
+            {
+                "count": {
+                    "value": "[parameters('resourcegroupExclusions')]",
+                    "name": "resourcegroupExclusions",
+                    "where": {
+                        "field": "id",
+                        "notlike": "[current('resourcegroupExclusions')]"
+                    }
+                },
+                "greater": 0
+            },
+            {
+                "field": "name",
+                "notIn": "[parameters('resourceExclusions')]"
+            }
+        ]
+    },
+    "then": {
+        "effect": "deployIfNotExists",
+        "details": {
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "roleDefinitionIds": [
+                "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+            ],
+            "existenceCondition": {
+                "allOf": [
+                    {
+                        "field": "Microsoft.Compute/virtualMachines/extensions/type",
+                        "equals": "InsightAgentLinux"
+                    },
+                    {
+                        "field": "Microsoft.Compute/virtualMachines/extensions/publisher",
+                        "equals": "Rapid7.InsightPlatform"
+                    },
+                    {
+                        "field": "Microsoft.Compute/virtualMachines/extensions/provisioningState",
+                        "equals": "Succeeded"
+                    }
+                ]
+            },
+            "deployment": {
+                "properties": {
+                    "mode": "incremental",
+                    "template": {
+                        "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                        "contentVersion": "1.0.0.0",
+                        "parameters": {
+                            "vmName": {
+                                "type": "string"
+                            },
+                            "location": {
+                                "type": "string"
+                            }
+                        },
+                        "variables": {
+                            "vmExtensionName": "InsightAgentLinux",
+                            "vmExtensionPublisher": "Rapid7.InsightPlatform",
+                            "vmExtensionType": "InsightAgentLinux",
+                            "vmExtensionTypeHandlerVersion": "2.0"
+                        },
+                        "resources": [
+                            {
+                                "name": "[concat(parameters('vmName'), '/', variables('vmExtensionName'))]",
+                                "type": "Microsoft.Compute/virtualMachines/extensions",
+                                "location": "[parameters('location')]",
+                                "apiVersion": "2017-03-30",
+                                "properties": {
+                                    "publisher": "[variables('vmExtensionPublisher')]",
+                                    "type": "[variables('vmExtensionType')]",
+                                    "typeHandlerVersion": "[variables('vmExtensionTypeHandlerVersion')]",
+                                    "autoUpgradeMinorVersion": true,
+                                    "protectedSettings": {
+                                        "configzip": "[parameters('configzip')]"
+                                    }
+                                }
+                            }
+                        ],
+                        "outputs": {
+                            "status": {
+                                "type": "string",
+                                "value": "[concat('Enabled extension for VM', ': ', parameters('vmName'))]"
+                            }
+                        }
+                    },
+                    "parameters": {
+                        "vmName": {
+                            "value": "[field('name')]"
+                        },
+                        "location": {
+                            "value": "[field('location')]"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

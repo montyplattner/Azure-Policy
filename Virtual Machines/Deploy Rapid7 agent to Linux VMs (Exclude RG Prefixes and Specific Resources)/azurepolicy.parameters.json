@@ -1,0 +1,25 @@
+{
+    "configzip": {
+        "type": "secureString",
+        "metadata": {
+            "displayName": "Rapid7 Configuration File (Base64 Encoded)",
+            "description": "Rapid7 config.zip file enocoded as base64. Example: [convert]::ToBase64String((Get-Content -path 'config.zip' -AsByteStream)) "
+        }
+    },
+    "resourcegroupExclusions": {
+        "type": "Array",
+        "defaultValue": [],
+        "metadata": {
+            "displayName": "Resource Groups to Exclude",
+            "description": "Resource Group Prefixes to exclude from policy assignment (i.e. '/subscriptions/{subscription-id}/resourceGroups/{resource-group-prefix}*')"
+        }
+    },
+    "resourceExclusions": {
+        "type": "Array",
+        "defaultValue": [],
+        "metadata": {
+            "displayName": "Resources to Exclude",
+            "description": "VMs to exclude from policy assignement."
+        }
+    }
+}

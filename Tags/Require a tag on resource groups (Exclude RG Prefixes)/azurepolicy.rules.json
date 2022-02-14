@@ -1,0 +1,28 @@
+{
+    "if": {
+        "allOf": [
+            {
+                "field": "type",
+                "equals": "Microsoft.Resources/subscriptions/resourceGroups"
+            },
+            {
+                "count": {
+                    "value": "[parameters('resourcegroupExclusions')]",
+                    "name": "resourcegroupExclusions",
+                    "where": {
+                        "field": "name",
+                        "notlike": "[current('resourcegroupExclusions')]"
+                    }
+                },
+                "greater": 0
+            },
+            {
+                "field": "[concat('tags[', parameters('tagName'), ']')]",
+                "exists": "false"
+            }
+        ]
+    },
+    "then": {
+        "effect": "deny"
+    }
+}

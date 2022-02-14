@@ -1,0 +1,17 @@
+{
+    "tagName": {
+        "type": "String",
+        "metadata": {
+            "displayName": "Tag Name",
+            "description": "Name of the tag, such as 'environment'"
+        }
+    },
+    "resourcegroupExclusions": {
+        "type": "Array",
+        "defaultValue": [],
+        "metadata": {
+            "displayName": "Resource Groups to Exclude",
+            "description": "Resource Group Prefixes to exclude from policy assignment (i.e. 'resource-group-prefix*')"
+        }
+    }
+}

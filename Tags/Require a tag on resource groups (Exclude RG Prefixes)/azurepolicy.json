@@ -1,0 +1,57 @@
+{
+    "properties": {
+        "displayName": "Require a tag on resource groups (Exclude RG Prefixes)",
+        "policyType": "Custom",
+        "mode": "All",
+        "description": "Enforces the existence of a tag on resource groups.",
+        "metadata": {
+            "version": "1.0.0",
+            "category": "Tags"
+        },
+        "parameters": {
+            "tagName": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "Tag Name",
+                    "description": "Name of the tag, such as 'environment'"
+                }
+            },
+            "resourcegroupExclusions": {
+                "type": "Array",
+                "defaultValue": [],
+                "metadata": {
+                    "displayName": "Resource Groups to Exclude",
+                    "description": "Resource Group Prefixes to exclude from policy assignment (i.e. 'resource-group-prefix*')"
+                }
+            }
+        },
+        "policyRule": {
+            "if": {
+                "allOf": [
+                    {
+                        "field": "type",
+                        "equals": "Microsoft.Resources/subscriptions/resourceGroups"
+                    },
+                    {
+                        "count": {
+                            "value": "[parameters('resourcegroupExclusions')]",
+                            "name": "resourcegroupExclusions",
+                            "where": {
+                                "field": "name",
+                                "notlike": "[current('resourcegroupExclusions')]"
+                            }
+                        },
+                        "greater": 0
+                    },
+                    {
+                        "field": "[concat('tags[', parameters('tagName'), ']')]",
+                        "exists": "false"
+                    }
+                ]
+            },
+            "then": {
+                "effect": "deny"
+            }
+        }
+    }
+}

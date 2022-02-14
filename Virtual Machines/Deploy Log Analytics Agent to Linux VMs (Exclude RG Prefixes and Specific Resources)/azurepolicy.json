@@ -1,0 +1,157 @@
+{
+  "properties": {
+    "displayName": "Deploy Log Analytics extension on Linux VMs (Exclude RG Prefixes and Specific Resources)",
+    "policyType": "Custom",
+    "mode": "Indexed",
+    "description": "Deploy Log Analytics extension for Linux VMs if the extension is not installed.",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "Monitoring"
+    },
+    "parameters": {
+      "logAnalytics": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Log Analytics workspace",
+          "description": "Select Log Analytics workspace from dropdown list. If this workspace is outside of the scope of the assignment you must manually grant 'Log Analytics Contributor' permissions (or similar) to the policy assignment's principal ID.",
+          "strongType": "omsWorkspace",
+          "assignPermissions": true
+        }
+      },
+      "resourcegroupExclusions": {
+        "type": "Array",
+        "defaultValue": [],
+        "metadata": {
+          "displayName": "Resource Groups to Exclude",
+          "description": "Resource Group Prefixes to exclude from policy assignment (i.e. '/subscriptions/{subscription-id}/resourceGroups/{resource-group-prefix}*')"
+        }
+      },
+      "resourceExclusions": {
+        "type": "Array",
+        "defaultValue": [],
+        "metadata": {
+          "displayName": "Resources to Exclude",
+          "description": "VMs to exclude from policy assignement."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Compute/virtualMachines"
+          },
+          {
+            "field": "Microsoft.Compute/virtualMachines/osProfile.linuxConfiguration",
+            "exists": "true"
+          },
+          {
+            "count": {
+              "value": "[parameters('resourcegroupExclusions')]",
+              "name": "resourcegroupExclusions",
+              "where": {
+                "field": "id",
+                "notlike": "[current('resourcegroupExclusions')]"
+              }
+            },
+            "greater": 0
+          },
+          {
+            "field": "name",
+            "notIn": "[parameters('resourceExclusions')]"
+          }
+        ]
+      },
+      "then": {
+        "effect": "deployIfNotExists",
+        "details": {
+          "type": "Microsoft.Compute/virtualMachines/extensions",
+          "roleDefinitionIds": [
+            "/providers/microsoft.authorization/roleDefinitions/92aaf0da-9dab-42b6-94a3-d43ce8d16293"
+          ],
+          "existenceCondition": {
+            "allOf": [
+              {
+                "field": "Microsoft.Compute/virtualMachines/extensions/type",
+                "equals": "OmsAgentForLinux"
+              },
+              {
+                "field": "Microsoft.Compute/virtualMachines/extensions/publisher",
+                "equals": "Microsoft.EnterpriseCloud.Monitoring"
+              },
+              {
+                "field": "Microsoft.Compute/virtualMachines/extensions/provisioningState",
+                "equals": "Succeeded"
+              }
+            ]
+          },
+          "deployment": {
+            "properties": {
+              "mode": "incremental",
+              "template": {
+                "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                "contentVersion": "1.0.0.0",
+                "parameters": {
+                  "vmName": {
+                    "type": "string"
+                  },
+                  "location": {
+                    "type": "string"
+                  },
+                  "logAnalytics": {
+                    "type": "string"
+                  }
+                },
+                "variables": {
+                  "vmExtensionName": "OMSAgentForLinux",
+                  "vmExtensionPublisher": "Microsoft.EnterpriseCloud.Monitoring",
+                  "vmExtensionType": "OmsAgentForLinux",
+                  "vmExtensionTypeHandlerVersion": "1.13"
+                },
+                "resources": [
+                  {
+                    "name": "[concat(parameters('vmName'), '/', variables('vmExtensionName'))]",
+                    "type": "Microsoft.Compute/virtualMachines/extensions",
+                    "location": "[parameters('location')]",
+                    "apiVersion": "2018-06-01",
+                    "properties": {
+                      "publisher": "[variables('vmExtensionPublisher')]",
+                      "type": "[variables('vmExtensionType')]",
+                      "typeHandlerVersion": "[variables('vmExtensionTypeHandlerVersion')]",
+                      "autoUpgradeMinorVersion": true,
+                      "settings": {
+                        "workspaceId": "[reference(parameters('logAnalytics'), '2015-03-20').customerId]",
+                        "stopOnMultipleConnections": "true"
+                      },
+                      "protectedSettings": {
+                        "workspaceKey": "[listKeys(parameters('logAnalytics'), '2015-03-20').primarySharedKey]"
+                      }
+                    }
+                  }
+                ],
+                "outputs": {
+                  "policy": {
+                    "type": "string",
+                    "value": "[concat('Enabled extension for VM', ': ', parameters('vmName'))]"
+                  }
+                }
+              },
+              "parameters": {
+                "vmName": {
+                  "value": "[field('name')]"
+                },
+                "location": {
+                  "value": "[field('location')]"
+                },
+                "logAnalytics": {
+                  "value": "[parameters('logAnalytics')]"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

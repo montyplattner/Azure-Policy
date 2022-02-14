@@ -1,0 +1,25 @@
+{
+  "if": {
+    "anyOf": [
+      {
+        "field": "[concat('tags[', parameters('Tag1'), ']')]",
+        "exists": "false"
+      },
+      {
+        "field": "[concat('tags[', parameters('Tag2'), ']')]",
+        "exists": "false"
+      },
+      {
+        "field": "[concat('tags[', parameters('Tag3'), ']')]",
+        "exists": "false"
+      },
+      {
+        "field": "[concat('tags[', parameters('Tag4'), ']')]",
+        "exists": "false"
+      }
+    ]
+  },
+  "then": {
+    "effect": "[parameters('Effect')]"
+  }
+}

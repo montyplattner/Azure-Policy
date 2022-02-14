@@ -1,0 +1,42 @@
+{
+  "Tag1": {
+    "type": "String",
+    "metadata": {
+      "displayName": "First Tag Name",
+      "description": "Name of the tag, such as 'environment'"
+    }
+  },
+  "Tag2": {
+    "type": "String",
+    "metadata": {
+      "displayName": "Second Tag Name",
+      "description": "Name of the tag, such as 'environment'"
+    }
+  },
+  "Tag3": {
+    "type": "String",
+    "metadata": {
+      "displayName": "Third Tag Name",
+      "description": "Name of the tag, such as 'environment'"
+    }
+  },
+  "Tag4": {
+    "type": "String",
+    "metadata": {
+      "displayName": "Forth Tag Name",
+      "description": "Name of the tag, such as 'environment'"
+    }
+  },
+  "Effect": {
+    "type": "String",
+    "metadata": {
+      "displayName": "Effect",
+      "description": "Enable or disable the execution of the policy"
+    },
+    "allowedValues": [
+      "audit",
+      "deny"
+    ],
+    "defaultValue": "audit"
+  }
+}

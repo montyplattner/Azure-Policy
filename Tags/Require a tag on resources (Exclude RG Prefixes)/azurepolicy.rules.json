@@ -1,0 +1,24 @@
+{
+    "if": {
+        "allof": [
+            {
+                "field": "[concat('tags[', parameters('tagName'), ']')]",
+                "exists": "false"
+            },
+            {
+                "count": {
+                    "value": "[parameters('resourcegroupExclusions')]",
+                    "name": "resourcegroupExclusions",
+                    "where": {
+                        "field": "id",
+                        "notlike": "[current('resourcegroupExclusions')]"
+                    }
+                },
+                "greater": 0
+            }
+        ]
+    },
+    "then": {
+        "effect": "deny"
+    }
+}

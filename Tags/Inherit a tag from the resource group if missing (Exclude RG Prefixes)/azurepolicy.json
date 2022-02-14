@@ -1,0 +1,69 @@
+{
+    "properties": {
+        "displayName": "Inherit a tag from the resource group if missing (Exclude RG Prefixes)",
+        "policyType": "Custom",
+        "mode": "Indexed",
+        "description": "Adds the specified tag with its value from the parent resource group when any resource missing this tag is created or updated. Existing resources can be remediated by triggering a remediation task. If the tag exists with a different value it will not be changed.",
+        "metadata": {
+            "version": "1.0.0",
+            "category": "Tags"
+        },
+        "parameters": {
+            "tagName": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "Tag Name",
+                    "description": "Name of the tag, such as 'environment'"
+                }
+            },
+            "resourcegroupExclusions": {
+                "type": "Array",
+                "defaultValue": [],
+                "metadata": {
+                    "displayName": "Resource Groups to Exclude",
+                    "description": "Resource Group prefixes to exclude from policy assignment (i.e. '/subscriptions/{subscription-id}/resourceGroups/{resource-group-prefix}*')"
+                }
+            }
+        },
+        "policyRule": {
+            "if": {
+                "allOf": [
+                    {
+                        "field": "[concat('tags[', parameters('tagName'), ']')]",
+                        "exists": "false"
+                    },
+                    {
+                        "value": "[resourceGroup().tags[parameters('tagName')]]",
+                        "notEquals": ""
+                    },
+                    {
+                        "count": {
+                            "value": "[parameters('resourcegroupExclusions')]",
+                            "name": "resourcegroupExclusions",
+                            "where": {
+                                "field": "id",
+                                "notlike": "[current('resourcegroupExclusions')]"
+                            }
+                        },
+                        "greater": 0
+                    }
+                ]
+            },
+            "then": {
+                "effect": "modify",
+                "details": {
+                    "roleDefinitionIds": [
+                        "/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+                    ],
+                    "operations": [
+                        {
+                            "operation": "add",
+                            "field": "[concat('tags[', parameters('tagName'), ']')]",
+                            "value": "[resourceGroup().tags[parameters('tagName')]]"
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}

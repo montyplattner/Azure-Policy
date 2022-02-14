@@ -1,0 +1,36 @@
+{
+    "if": {
+        "allof": [
+            {
+                "field": "[concat('tags[', parameters('tagName'), ']')]",
+                "exists": "false"
+            },
+            {
+                "count": {
+                    "value": "[parameters('resourcegroupPrefixes')]",
+                    "name": "resourcegroupPrefixes",
+                    "where": {
+                        "field": "id",
+                        "like": "[current('resourcegroupPrefixes')]"
+                    }
+                },
+                "greater": 0
+            }
+        ]
+    },
+    "then": {
+        "effect": "modify",
+        "details": {
+            "roleDefinitionIds": [
+                "/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+            ],
+            "operations": [
+                {
+                    "operation": "add",
+                    "field": "[concat('tags[', parameters('tagName'), ']')]",
+                    "value": "[parameters('tagValue')]"
+                }
+            ]
+        }
+    }
+}

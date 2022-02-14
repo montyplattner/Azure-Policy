@@ -1,0 +1,44 @@
+{
+    "if": {
+        "allof": [
+            {
+                "field": "[concat('tags[', parameters('tagName'), ']')]",
+                "exists": "false"
+            },
+            {
+                "field": "type",
+                "equals": "Microsoft.Compute/virtualMachines"
+            },
+            {
+                "count": {
+                    "value": "[parameters('resourcegroupExclusions')]",
+                    "name": "resourcegroupExclusions",
+                    "where": {
+                        "field": "id",
+                        "notlike": "[current('resourcegroupExclusions')]"
+                    }
+                },
+                "greater": 0
+            },
+            {
+                "field": "name",
+                "notIn": "[parameters('resourceExclusions')]"
+            }
+        ]
+    },
+    "then": {
+        "effect": "modify",
+        "details": {
+            "roleDefinitionIds": [
+                "/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+            ],
+            "operations": [
+                {
+                    "operation": "add",
+                    "field": "[concat('tags[', parameters('tagName'), ']')]",
+                    "value": "[parameters('tagValue')]"
+                }
+            ]
+        }
+    }
+}

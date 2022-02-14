@@ -1,0 +1,151 @@
+{
+    "properties": {
+        "displayName": "Deploy Rapid7 agent to Windows VMs (Exclude RG Prefixes and Specific Resources)",
+        "policyType": "Custom",
+        "mode": "Indexed",
+        "description": "Deploy Rapid7 extension for Windows VMs if the extension is not installed.",
+        "metadata": {
+            "version": "1.0.0",
+            "category": "Security Center"
+        },
+        "parameters": {
+            "configzip": {
+                "type": "string",
+                "metadata": {
+                    "displayName": "Rapid7 Configuration File (Base64 Encoded)",
+                    "description": "Rapid7 config.zip file enocoded as base64. Example: [convert]::ToBase64String((Get-Content -path 'config.zip' -AsByteStream))"
+                }
+            },
+            "resourcegroupExclusions": {
+                "type": "Array",
+                "defaultValue": [],
+                "metadata": {
+                    "displayName": "Resource Groups to Exclude",
+                    "description": "Resource Group Prefixes to exclude from policy assignment (i.e. '/subscriptions/{subscription-id}/resourceGroups/{resource-group-prefix}*')"
+                }
+            },
+            "resourceExclusions": {
+                "type": "Array",
+                "defaultValue": [],
+                "metadata": {
+                    "displayName": "Resources to Exclude",
+                    "description": "VMs to exclude from policy assignement."
+                }
+            }
+        },
+        "policyRule": {
+            "if": {
+                "allOf": [
+                    {
+                        "field": "type",
+                        "equals": "Microsoft.Compute/virtualMachines"
+                    },
+                    {
+                        "field": "Microsoft.Compute/virtualMachines/osProfile.windowsConfiguration",
+                        "exists": "true"
+                    },
+                    {
+                        "count": {
+                            "value": "[parameters('resourcegroupExclusions')]",
+                            "name": "resourcegroupExclusions",
+                            "where": {
+                                "field": "id",
+                                "notlike": "[current('resourcegroupExclusions')]"
+                            }
+                        },
+                        "greater": 0
+                    },
+                    {
+                        "field": "name",
+                        "notIn": "[parameters('resourceExclusions')]"
+                    }
+                ]
+            },
+            "then": {
+                "effect": "deployIfNotExists",
+                "details": {
+                    "type": "Microsoft.Compute/virtualMachines/extensions",
+                    "roleDefinitionIds": [
+                        "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+                    ],
+                    "existenceCondition": {
+                        "allOf": [
+                            {
+                                "field": "Microsoft.Compute/virtualMachines/extensions/type",
+                                "equals": "InsightAgentWindows"
+                            },
+                            {
+                                "field": "Microsoft.Compute/virtualMachines/extensions/publisher",
+                                "equals": "Rapid7.InsightPlatform"
+                            },
+                            {
+                                "field": "Microsoft.Compute/virtualMachines/extensions/provisioningState",
+                                "equals": "Succeeded"
+                            }
+                        ]
+                    },
+                    "deployment": {
+                        "properties": {
+                            "mode": "incremental",
+                            "template": {
+                                "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                                "contentVersion": "1.0.0.0",
+                                "parameters": {
+                                    "vmName": {
+                                        "type": "string"
+                                    },
+                                    "location": {
+                                        "type": "string"
+                                    },
+                                    "configZip": {
+                                        "type": "secureString"
+                                    }
+                                },
+                                "variables": {
+                                    "vmExtensionName": "InsightAgentWindows",
+                                    "vmExtensionPublisher": "Rapid7.InsightPlatform",
+                                    "vmExtensionType": "InsightAgentWindows",
+                                    "vmExtensionTypeHandlerVersion": "2.0"
+                                },
+                                "resources": [
+                                    {
+                                        "name": "[concat(parameters('vmName'), '/', variables('vmExtensionName'))]",
+                                        "type": "Microsoft.Compute/virtualMachines/extensions",
+                                        "location": "[parameters('location')]",
+                                        "apiVersion": "2017-03-30",
+                                        "properties": {
+                                            "publisher": "[variables('vmExtensionPublisher')]",
+                                            "type": "[variables('vmExtensionType')]",
+                                            "typeHandlerVersion": "[variables('vmExtensionTypeHandlerVersion')]",
+                                            "autoUpgradeMinorVersion": true,
+                                            "protectedSettings": {
+                                                "configzip": "[parameters('configzip')]"
+                                            }
+                                        }
+                                    }
+                                ],
+                                "outputs": {
+                                    "status": {
+                                        "type": "string",
+                                        "value": "[concat('Enabled extension for VM', ': ', parameters('vmName'))]"
+                                    }
+                                }
+                            },
+                            "parameters": {
+                                "vmName": {
+                                    "value": "[field('name')]"
+                                },
+                                "location": {
+                                    "value": "[field('location')]"
+                                },
+                                "configZip": {
+                                    "value": "[parameters('configzip')]"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

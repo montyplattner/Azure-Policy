@@ -1,0 +1,76 @@
+{
+    "properties": {
+        "displayName": "Append a tag and its value to resource groups with a matching prefix",
+        "policyType": "Custom",
+        "mode": "All",
+        "description": "Adds the specified tag and value when a resource group missing this tag is created or updated. Existing resources can be remediated by triggering a remediation task. If the tag exists with a different value it will not be changed.",
+        "metadata": {
+            "version": "1.0.0",
+            "category": "Tags"
+        },
+        "parameters": {
+            "tagName": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "Tag Name",
+                    "description": "Name of the tag, such as 'environment'"
+                }
+            },
+            "tagValue": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "Tag Value",
+                    "description": "Value of the tag, such as 'production'"
+                }
+            },
+            "resourcegroupPrefixes": {
+                "type": "Array",
+                "defaultValue": [],
+                "metadata": {
+                    "displayName": "Resource Group Prefixes to Match",
+                    "description": "Resource Group prefixes to include in the policy assignment (i.e. 'resource-group-prefix*')"
+                }
+            }
+        },
+        "policyRule": {
+            "if": {
+                "allof": [
+                    {
+                        "field": "[concat('tags[', parameters('tagName'), ']')]",
+                        "exists": "false"
+                    },
+                    {
+                        "field": "type",
+                        "equals": "Microsoft.Resources/subscriptions/resourceGroups"
+                    },
+                    {
+                        "count": {
+                            "value": "[parameters('resourcegroupPrefixes')]",
+                            "name": "resourcegroupPrefixes",
+                            "where": {
+                                "field": "name",
+                                "like": "[current('resourcegroupPrefixes')]"
+                            }
+                        },
+                        "greater": 0
+                    }
+                ]
+            },
+            "then": {
+                "effect": "modify",
+                "details": {
+                    "roleDefinitionIds": [
+                        "/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+                    ],
+                    "operations": [
+                        {
+                            "operation": "add",
+                            "field": "[concat('tags[', parameters('tagName'), ']')]",
+                            "value": "[parameters('tagValue')]"
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}

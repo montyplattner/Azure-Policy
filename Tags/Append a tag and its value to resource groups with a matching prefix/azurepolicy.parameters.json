@@ -1,0 +1,24 @@
+{
+    "tagName": {
+        "type": "String",
+        "metadata": {
+            "displayName": "Tag Name",
+            "description": "Name of the tag, such as 'environment'"
+        }
+    },
+    "tagValue": {
+        "type": "String",
+        "metadata": {
+            "displayName": "Tag Value",
+            "description": "Value of the tag, such as 'production'"
+        }
+    },
+    "resourcegroupPrefixes": {
+        "type": "Array",
+        "defaultValue": [],
+        "metadata": {
+            "displayName": "Resource Group Prefixes to Match",
+            "description": "Resource Group prefixes to include in the policy assignment (i.e. 'resource-group-prefix*')"
+        }
+    }
+}

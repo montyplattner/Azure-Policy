@@ -1,0 +1,26 @@
+{
+  "listOfAllowedSKUs": {
+    "type": "Array",
+    "metadata": {
+      "description": "Allowed Size SKUs.",
+      "displayName": "Allowed Size SKUs",
+      "strongType": "vmSKUs"
+    }
+  },
+  "resourcegroupExclusions": {
+    "type": "Array",
+    "defaultValue": [],
+    "metadata": {
+      "displayName": "Resource Groups to Exclude",
+      "description": "Resource Group Prefixes to exclude from policy assignment (i.e. '/subscriptions/{subscription-id}/resourceGroups/{resource-group-prefix}*')"
+    }
+  },
+  "resourceExclusions": {
+    "type": "Array",
+    "defaultValue": [],
+    "metadata": {
+      "displayName": "Resources to Exclude",
+      "description": "VMs to exclude from policy assignement."
+    }
+  }
+}

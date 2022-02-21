@@ -6,6 +6,10 @@
                 "exists": "false"
             },
             {
+                "field": "type",
+                "notIn": ["Microsoft.Web/connections"]
+            },
+            {
                 "count": {
                     "value": "[parameters('resourcegroupExclusions')]",
                     "name": "resourcegroupExclusions",

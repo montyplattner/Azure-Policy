@@ -7,7 +7,10 @@
             },
             {
                 "field": "type",
-                "notIn": ["Microsoft.Web/connections"]
+                "notIn": [
+                    "Microsoft.Web/connections",
+                    "Microsoft.Compute/virtualMachines/extensions"
+                ]
             },
             {
                 "count": {

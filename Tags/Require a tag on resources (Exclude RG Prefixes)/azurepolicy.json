@@ -36,7 +36,9 @@
                         "field": "type",
                         "notIn": [
                             "Microsoft.Web/connections",
-                            "Microsoft.Compute/virtualMachines/extensions"
+                            "Microsoft.Compute/virtualMachines/extensions",
+                            "Microsoft.Insights/actionGroups",
+                            "Microsoft.insights/workbooks"
                         ]
                     },
                     {

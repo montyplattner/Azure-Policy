@@ -1,0 +1,23 @@
+{
+    "existingTagName": {
+        "type": "String",
+        "metadata": {
+            "displayName": "Existing Tag Name",
+            "description": "Name of the tag, such as 'environment'"
+        }
+    },
+    "existingTagValue": {
+        "type": "String",
+        "metadata": {
+            "displayName": "Existing Tag Value",
+            "description": "Value of the tag, such as 'production'"
+        }
+    },
+    "requiredTagName": {
+        "type": "String",
+        "metadata": {
+            "displayName": "Required Tag Name",
+            "description": "Name of the tag, such as 'environment'"
+        }
+    }
+}

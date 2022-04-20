@@ -1,0 +1,56 @@
+{
+    "properties": {
+        "displayName": "Require a tag on resource groups if another tag is present and set to a specific value",
+        "policyType": "Custom",
+        "mode": "All",
+        "description": "Enforces the existence of a tag on resource groups if another tag is present and set to a specific value.",
+        "metadata": {
+            "version": "1.0.0",
+            "category": "Tags"
+        },
+        "parameters": {
+            "existingTagName": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "Existing Tag Name",
+                    "description": "Name of the tag, such as 'environment'"
+                }
+            },
+            "existingTagValue": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "Existing Tag Value",
+                    "description": "Value of the tag, such as 'production'"
+                }
+            },
+            "requiredTagName": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "Required Tag Name",
+                    "description": "Name of the tag, such as 'environment'"
+                }
+            }
+        },
+        "policyRule": {
+            "if": {
+                "allOf": [
+                    {
+                        "field": "type",
+                        "equals": "Microsoft.Resources/subscriptions/resourceGroups"
+                    },
+                    {
+                        "field": "[concat('tags[', parameters('existingTagName'), ']')]",
+                        "equals": "[parameters('existingTagValue')]"
+                    },
+                    {
+                        "field": "[concat('tags[', parameters('requiredTagName'), ']')]",
+                        "exists": "false"
+                    }
+                ]
+            },
+            "then": {
+                "effect": "deny"
+            }
+        }
+    }
+}

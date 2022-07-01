@@ -1,0 +1,193 @@
+{
+    "properties": {
+        "mode": "All",
+        "displayName": "Require subnets to have attached NSGs",
+        "description": "This policy requires all subnets to have an associated NSG attached to them.",
+        "parameters": {
+            "excludedSubnets": {
+                "type": "Array",
+                "metadata": {
+                    "displayName": "Excluded Subnets",
+                    "description": "Array of subnet names that are excluded from this policy"
+                },
+                "defaultValue": [
+                    "AzureBastionSubnet",
+                    "GatewaySubnet",
+                    "AzureFirewallSubnet",
+                    "AzureFirewallManagementSubnet"
+                ]
+            },
+            "resourcegroupExclusions": {
+                "type": "Array",
+                "defaultValue": [],
+                "metadata": {
+                    "displayName": "Resource Groups to Exclude",
+                    "description": "Resource Group prefixes to exclude from policy assignment (i.e. '/subscriptions/{subscription-id}/resourceGroups/{resource-group-prefix}*')"
+                }
+            }
+        },
+        "policyRule": {
+            "if": {
+                "allOf": [
+                    {
+                        "field": "type",
+                        "equals": "Microsoft.Network/virtualNetworks/subnets"
+                    },
+                    {
+                        "field": "Microsoft.Network/virtualNetworks/subnets/networkSecurityGroup.id",
+                        "exists": "false"
+                    },
+                    {
+                        "field": "name",
+                        "notIn": "[parameters('excludedSubnets')]"
+                    },
+                    {
+                        "count": {
+                            "value": "[parameters('resourcegroupExclusions')]",
+                            "name": "resourcegroupExclusions",
+                            "where": {
+                                "field": "id",
+                                "notlike": "[current('resourcegroupExclusions')]"
+                            }
+                        },
+                        "greater": 0
+                    }
+                ]
+            },
+            "then": {
+                "effect": "deployIfNotExists",
+                "details": {
+                    "type": "Microsoft.Network/networkSecurityGroups",
+                    "roleDefinitionIds": [
+                        "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+                    ],
+                    "existenceCondition": {
+                        "allOf": [
+                            {
+                                "field": "type",
+                                "equals": "Microsoft.Network/virtualNetworks/subnets"
+                            },
+                            {
+                                "field": "Microsoft.Network/virtualNetworks/subnets/networkSecurityGroup.id",
+                                "exists": "false"
+                            },
+                            {
+                                "field": "name",
+                                "notIn": "[parameters('excludedSubnets')]"
+                            }
+                        ]
+                    },
+                    "deployment": {
+                        "properties": {
+                            "mode": "incremental",
+                            "parameters": {
+                                "virtualNetworkName": {
+                                    "value": "[split(field('Id'),'/')[8]]"
+                                },
+                                "subnetName": {
+                                    "value": "[field('name')]"
+                                },
+                                "subnetId": {
+                                    "value": "[field('Id')]"
+                                }
+                            },
+                            "template": {
+                                "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+                                "contentVersion": "1.0.0.1",
+                                "parameters": {
+                                    "virtualNetworkName": {
+                                        "type": "string",
+                                        "metadata": {
+                                            "description": "The name of the existing VNet"
+                                        }
+                                    },
+                                    "subnetName": {
+                                        "type": "string",
+                                        "defaultValue": "default",
+                                        "metadata": {
+                                            "description": "The name of the existing subnet."
+                                        }
+                                    },
+                                    "subnetId": {
+                                        "type": "string",
+                                        "metadata": {
+                                            "description": "The ID of the existing subnet."
+                                        }
+                                    }
+                                },
+                                "variables": {
+                                    "nsgName": "[concat('nsg-', parameters('subnetName'))]"
+                                },
+                                "resources": [
+                                    {
+                                        "type": "Microsoft.Network/networkSecurityGroups",
+                                        "name": "[variables('nsgName')]",
+                                        "location": "[resourceGroup().location]",
+                                        "apiVersion": "2018-03-01",
+                                        "properties": {}
+                                    },
+                                    {
+                                        "apiVersion": "2017-08-01",
+                                        "name": "apply-nsg-to-subnet",
+                                        "type": "Microsoft.Resources/deployments",
+                                        "resourceGroup": "[resourceGroup().name]",
+                                        "dependsOn": [
+                                            "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
+                                        ],
+                                        "properties": {
+                                            "mode": "Incremental",
+                                            "template": {
+                                                "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                                                "contentVersion": "1.0.0.0",
+                                                "resources": [
+                                                    {
+                                                        "apiVersion": "2018-03-01",
+                                                        "type": "Microsoft.Network/virtualNetworks/subnets",
+                                                        "name": "[concat(parameters('virtualNetworkName'), '/', parameters('subnetName'))]",
+                                                        "location": "[resourceGroup().location]",
+                                                        "properties": {
+                                                            "addressPrefix": "[reference(resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetName')), '2018-03-01').addressPrefix]",
+                                                            "networkSecurityGroup": {
+                                                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
+                                                            }
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    }
+                                ],
+                                "outputs": {
+                                    "Virtual Network Name": {
+                                        "type": "string",
+                                        "value": "[parameters('virtualNetworkName')]"
+                                    },
+                                    "Subnet Name": {
+                                        "type": "string",
+                                        "value": "[parameters('subnetName')]"
+                                    },
+                                    "Subnet Address Space": {
+                                        "type": "array",
+                                        "value": "[reference(resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetName')), '2018-03-01').addressPrefix]"
+                                    },
+                                    "NSG Name": {
+                                        "type": "string",
+                                        "value": "[variables('nsgName')]"
+                                    },
+                                    "NSG ID": {
+                                        "type": "string",
+                                        "value": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
+                                    },
+                                    "Location": {
+                                        "type": "string",
+                                        "value": "[resourceGroup().location]"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
